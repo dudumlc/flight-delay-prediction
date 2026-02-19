@@ -24,10 +24,44 @@ def salvar_no_sqlite(caminho_csv):
         # Nota: O VRA da ANAC geralmente usa sep=';' e encoding='latin-1'
         # low_memory=False evita avisos de tipos de dados mistos
         df = pd.read_csv(caminho_csv, skiprows=1, sep=';', low_memory=False)
-        
+
         # APLICA A NOVA PADRONIZAÇÃO (Chama a função para cada coluna)
         df.columns = [padronizar_coluna_voo(c) for c in df.columns]
 
+        # AJUSTE DE DATAS
+        date_cols = [
+                'partidaPrevista',
+                'partidaReal',
+                'chegadaPrevista',
+                'chegadaReal'
+            ]
+
+                
+        for col in date_cols:
+
+            # 1º Passo: formato ISO dominante
+            df[col] = pd.to_datetime(
+                df[col],
+                format="%Y-%m-%d %H:%M:%S",
+                errors="coerce"
+            )
+
+            # 2º Passo: tratar apenas os que falharam
+            mask = df[col].isna()
+
+            if mask.any():
+                df.loc[mask, col] = pd.to_datetime(
+                    df.loc[mask, col],
+                    format="%d/%m/%Y %H:%M",
+                    errors="coerce"
+                )
+
+        ano = caminho_csv.split('\\')[2]
+        df['anoRef'] = ano
+
+        nome_arquivo = caminho_csv.split('\\')[-1]
+        df['nomeArquivo'] = nome_arquivo
+        
         # O pandas cria a tabela 'voos' se não existir (if_exists='append')
         df.to_sql('voos', conn, if_exists='append', index=False)
         
