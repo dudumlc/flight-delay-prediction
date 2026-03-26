@@ -61,6 +61,9 @@ def salvar_no_sqlite(caminho_csv):
 
         nome_arquivo = caminho_csv.split('\\')[-1]
         df['nomeArquivo'] = nome_arquivo
+
+        # EXCLUSÃO DE LINHAS COM ERRO
+        df = df[df['situacaoVoo'] == "Microsoft.SqlServer.Dts.Pipeline.BlobColumn"]
         
         # O pandas cria a tabela 'voos' se não existir (if_exists='append')
         df.to_sql('voos', conn, if_exists='append', index=False)
