@@ -63,10 +63,10 @@ def salvar_no_sqlite(caminho_csv):
         df['nomeArquivo'] = nome_arquivo
 
         # EXCLUSÃO DE LINHAS COM ERRO
-        df = df[df['situacaoVoo'] == "Microsoft.SqlServer.Dts.Pipeline.BlobColumn"]
+        df = df[df['situacaoVoo'] != "Microsoft.SqlServer.Dts.Pipeline.BlobColumn"]
         
         # O pandas cria a tabela 'voos' se não existir (if_exists='append')
-        df.to_sql('voos', conn, if_exists='append', index=False)
+        df.to_sql('brz_voos', conn, if_exists='append', index=False)
         
         print(f"    [SQLITE] {len(df)} linhas inseridas em {caminho_db}")
         
@@ -100,6 +100,10 @@ def extrair_vra():
             print(f"\n[ANO] Entrando na pasta: {pasta_ano}")
             url_ano = urljoin(BASE_URL, href_ano)
             
+            if (int(pasta_ano)) < 2014:
+                print(f"  [SKIP] Ano {pasta_ano} é anterior a 2015. Pulando...")
+                continue
+
             try:
                 res_ano = requests.get(url_ano, timeout=15)
                 soup_ano = BeautifulSoup(res_ano.text, 'html.parser')
