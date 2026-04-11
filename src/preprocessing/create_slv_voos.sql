@@ -9,7 +9,7 @@ WHERE
     (aerodromoOrigem = 'SBCF' OR aerodromoDestino = 'SBCF') AND
     CAST(anoRef AS INT) > 2021
     AND partidaPrevista IS NOT NULL 
-    AND partidaReal IS NOT NULL
+    -- AND partidaReal IS NOT NULL
     -- AND chegadaPrevista IS NOT NULL 
     -- AND chegadaReal IS NOT NULL
 GROUP BY idVoo
