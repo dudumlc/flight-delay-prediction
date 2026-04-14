@@ -1,4 +1,4 @@
-CREATE OR REPLACE TABLE local_duck.feature_store_voos AS  --Criação de tabela de features no duckdb para facilitar manipulação
+CREATE OR REPLACE TABLE local_duck.fs_atrasos AS  --Criação de tabela de features no duckdb para facilitar manipulação
 
 WITH base_flags AS (
     SELECT
@@ -22,9 +22,10 @@ WITH base_flags AS (
 
 SELECT
     a.idVoo,
-    a.ts_previsto,
-    a.ts_real,
-    a.flagAtraso,
+    --a.ts_previsto,
+    --a.ts_real,
+    --a.flagAtraso,
+    
     -- 1. Total de atrasos na janela
     COUNT(b.idVoo) FILTER (WHERE b.flagAtraso = 1) AS atrasos24h,
 
