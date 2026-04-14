@@ -1,74 +1,69 @@
-WITH base_flags AS (
-    SELECT
-        *,
-        CAST(partidaReal AS TIMESTAMP) AS ts_real,
-        CAST(partidaPrevista AS TIMESTAMP) AS ts_previsto,
-        
-        -- Definição do delta de atraso - minutos
-        date_diff('minute', CAST(partidaPrevista AS TIMESTAMP), CAST(partidaReal AS TIMESTAMP)) AS deltaPartida_minutos,
+CREATE OR REPLACE TABLE local_duck.fs_cancelamentos AS  --Criação de tabela de features no duckdb para facilitar manipulação
 
-        -- Definição da variável target - booleano
-        CASE 
-            WHEN date_diff('minute', CAST(partidaPrevista AS TIMESTAMP), CAST(partidaReal AS TIMESTAMP)) > 30 THEN 1 
-            ELSE 0 
-        END AS flagAtraso
-    FROM database.slv_voos
+WITH base_cancelamentos AS (
+
+SELECT    
+    *,
+    CAST(partidaReal AS TIMESTAMP) AS ts_real,
+    CAST(partidaPrevista AS TIMESTAMP) AS ts_previsto
+FROM database.slv_voos
+
 )
 
 SELECT
     a.idVoo,
     a.ts_previsto,
     a.ts_real,
-    a.flagAtraso,
-    a.
-    -- 1. Total de atrasos na janela
-    COUNT(b.idVoo) FILTER (WHERE b.flagAtraso = 1) AS atrasos24h,
+    a.situacaoVoo,
+
+    -- 1. Total de cancelamentos na janela
+    COUNT(b.idVoo) FILTER (WHERE b.ts_real IS NULL) AS cancelamentos24h,
 
     -- 2. Mesma Rota (Origem AND Destino)
-    COUNT(b.idVoo) FILTER (WHERE b.flagAtraso = 1 AND b.aerodromoOrigem = a.aerodromoOrigem AND b.aerodromoDestino = a.aerodromoDestino) AS atrasosRota24h,
+    COUNT(b.idVoo) FILTER (WHERE b.ts_real IS NULL AND b.aerodromoOrigem = a.aerodromoOrigem AND b.aerodromoDestino = a.aerodromoDestino) AS cancelamentosRota24h,
 
     -- 3. Mesmo Destino
-    COUNT(b.idVoo) FILTER (WHERE b.flagAtraso = 1 AND b.aerodromoDestino = a.aerodromoDestino) AS atrasosDestino24h,
+    COUNT(b.idVoo) FILTER (WHERE b.ts_real IS NULL AND b.aerodromoDestino = a.aerodromoDestino) AS cancelamentosDestino24h,
 
     -- 4. Mesma Companhia
-    COUNT(b.idVoo) FILTER (WHERE b.flagAtraso = 1 AND b.empresaAerea = a.empresaAerea) AS atrasosCia24h,
+    COUNT(b.idVoo) FILTER (WHERE b.ts_real IS NULL AND b.empresaAerea = a.empresaAerea) AS cancelamentosCia24h,
 
     -- 5. Mesma Companhia + Mesma Rota
-    COUNT(b.idVoo) FILTER (WHERE b.flagAtraso = 1 AND b.empresaAerea = a.empresaAerea AND b.aerodromoOrigem = a.aerodromoOrigem AND b.aerodromoDestino = a.aerodromoDestino) AS atrasosCiaRota24h,
+    COUNT(b.idVoo) FILTER (WHERE b.ts_real IS NULL AND b.empresaAerea = a.empresaAerea AND b.aerodromoOrigem = a.aerodromoOrigem AND b.aerodromoDestino = a.aerodromoDestino) AS cancelamentosCiaRota24h,
 
 
-        -- 1. Total de atrasos na janela
-    COUNT(b.idVoo) FILTER (WHERE b.flagAtraso = 1 AND b.ts_previsto >= (a.ts_previsto - INTERVAL 13 HOUR)) AS atrasos12h,
+            -- 1. Total de cancelamentos na janela
+    COUNT(b.idVoo) FILTER (WHERE b.ts_real IS NULL AND b.ts_previsto >= (a.ts_previsto - INTERVAL 17 HOUR)) AS cancelamentos12h,
 
     -- 2. Mesma Rota (Origem AND Destino)
-    COUNT(b.idVoo) FILTER (WHERE b.flagAtraso = 1 AND b.aerodromoOrigem = a.aerodromoOrigem AND b.aerodromoDestino = a.aerodromoDestino AND b.ts_previsto >= (a.ts_previsto - INTERVAL 13 HOUR)) AS atrasosRota12h,
+    COUNT(b.idVoo) FILTER (WHERE b.ts_real IS NULL AND b.aerodromoOrigem = a.aerodromoOrigem AND b.aerodromoDestino = a.aerodromoDestino AND b.ts_previsto >= (a.ts_previsto - INTERVAL 17 HOUR)) AS cancelamentosRota12h,
     -- 3. Mesmo Destino
-    COUNT(b.idVoo) FILTER (WHERE b.flagAtraso = 1 AND b.aerodromoDestino = a.aerodromoDestino AND b.ts_previsto >= (a.ts_previsto - INTERVAL 13 HOUR)) AS atrasosDestino12h,
+    COUNT(b.idVoo) FILTER (WHERE b.ts_real IS NULL AND b.aerodromoDestino = a.aerodromoDestino AND b.ts_previsto >= (a.ts_previsto - INTERVAL 17 HOUR)) AS cancelamentosDestino12h,
 
     -- 4. Mesma Companhia
-    COUNT(b.idVoo) FILTER (WHERE b.flagAtraso = 1 AND b.empresaAerea = a.empresaAerea AND b.ts_previsto >= (a.ts_previsto - INTERVAL 13 HOUR)) AS atrasosCia12h,
+    COUNT(b.idVoo) FILTER (WHERE b.ts_real IS NULL AND b.empresaAerea = a.empresaAerea AND b.ts_previsto >= (a.ts_previsto - INTERVAL 17 HOUR)) AS cancelamentosCia12h,
 
     -- 5. Mesma Companhia + Mesma Rota
-    COUNT(b.idVoo) FILTER (WHERE b.flagAtraso = 1 AND b.empresaAerea = a.empresaAerea AND b.aerodromoOrigem = a.aerodromoOrigem AND b.aerodromoDestino = a.aerodromoDestino AND b.ts_previsto >= (a.ts_previsto - INTERVAL 13 HOUR)) AS atrasosCiaRota12h,
+    COUNT(b.idVoo) FILTER (WHERE b.ts_real IS NULL AND b.empresaAerea = a.empresaAerea AND b.aerodromoOrigem = a.aerodromoOrigem AND b.aerodromoDestino = a.aerodromoDestino AND b.ts_previsto >= (a.ts_previsto - INTERVAL 17 HOUR)) AS cancelamentosCiaRota12h,
 
 
-            -- 1. Total de atrasos na janela
-    COUNT(b.idVoo) FILTER (WHERE b.flagAtraso = 1 AND b.ts_previsto >= (a.ts_previsto - INTERVAL 4 HOUR)) AS atrasos3h,
+            -- 1. Total de cancelamentos na janela
+    COUNT(b.idVoo) FILTER (WHERE b.ts_real IS NULL AND b.ts_previsto >= (a.ts_previsto - INTERVAL 8 HOUR)) AS cancelamentos3h,
 
     -- 2. Mesma Rota (Origem AND Destino)
-    COUNT(b.idVoo) FILTER (WHERE b.flagAtraso = 1 AND b.aerodromoOrigem = a.aerodromoOrigem AND b.aerodromoDestino = a.aerodromoDestino AND b.ts_previsto >= (a.ts_previsto - INTERVAL 4 HOUR)) AS atrasosRota3h,
+    COUNT(b.idVoo) FILTER (WHERE b.ts_real IS NULL AND b.aerodromoOrigem = a.aerodromoOrigem AND b.aerodromoDestino = a.aerodromoDestino AND b.ts_previsto >= (a.ts_previsto - INTERVAL 8 HOUR)) AS cancelamentosRota3h,
     -- 3. Mesmo Destino
-    COUNT(b.idVoo) FILTER (WHERE b.flagAtraso = 1 AND b.aerodromoDestino = a.aerodromoDestino AND b.ts_previsto >= (a.ts_previsto - INTERVAL 4 HOUR)) AS atrasosDestino3h,
+    COUNT(b.idVoo) FILTER (WHERE b.ts_real IS NULL AND b.aerodromoDestino = a.aerodromoDestino AND b.ts_previsto >= (a.ts_previsto - INTERVAL 8 HOUR)) AS cancelamentosDestino3h,
 
     -- 4. Mesma Companhia
-    COUNT(b.idVoo) FILTER (WHERE b.flagAtraso = 1 AND b.empresaAerea = a.empresaAerea AND b.ts_previsto >= (a.ts_previsto - INTERVAL 4 HOUR)) AS atrasosCia3h,
+    COUNT(b.idVoo) FILTER (WHERE b.ts_real IS NULL AND b.empresaAerea = a.empresaAerea AND b.ts_previsto >= (a.ts_previsto - INTERVAL 8 HOUR)) AS cancelamentosCia3h,
 
     -- 5. Mesma Companhia + Mesma Rota
-    COUNT(b.idVoo) FILTER (WHERE b.flagAtraso = 1 AND b.empresaAerea = a.empresaAerea AND b.aerodromoOrigem = a.aerodromoOrigem AND b.aerodromoDestino = a.aerodromoDestino AND b.ts_previsto >= (a.ts_previsto - INTERVAL 4 HOUR)) AS atrasosCiaRota3h
+    COUNT(b.idVoo) FILTER (WHERE b.ts_real IS NULL AND b.empresaAerea = a.empresaAerea AND b.aerodromoOrigem = a.aerodromoOrigem AND b.aerodromoDestino = a.aerodromoDestino AND b.ts_previsto >= (a.ts_previsto - INTERVAL 8 HOUR)) AS cancelamentosCiaRota3h
 
-FROM base_flags a
-LEFT JOIN base_flags b 
-    ON  b.ts_previsto >= (a.ts_previsto - INTERVAL 25 HOUR)
-    AND b.ts_previsto <= (a.ts_previsto - INTERVAL 1 HOUR)
-    AND b.ts_real <= (a.ts_previsto - INTERVAL 1 HOUR) -- Anti-leakage
+FROM base_cancelamentos a
+LEFT JOIN base_cancelamentos b 
+    ON  b.ts_previsto >= (a.ts_previsto - INTERVAL 29 HOUR)
+    AND b.ts_previsto <= (a.ts_previsto - INTERVAL 5 HOUR)
+    -- AND b.ts_real <= (a.ts_previsto - INTERVAL 1 HOUR) -- ASSUMINDO RISCO DE DATA LEAKAGE, POIS O VOO PODE TER SIDO CANCELADO APÓS O HORÁRIO PREVISTO, MAS ANTES DO HORÁRIO REAL, O QUE NÃO SERIA CONHECIDO NO MOMENTO DA PREVISÃO
 GROUP BY ALL
