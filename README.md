@@ -1,16 +1,13 @@
-# Pipeline de Dados: Aviação (ANAC) vs Clima (INMET)
+# PREVISÃO DE ATRASO DE VOOS
 
-Automatiza o processo de ETL (Extração, Transformação e Carga) de dados de voos da **ANAC (Voo Regular Ativo - VRA)** e dados meteorológicos horários do **INMET (Instituto Nacional de Meteorologia)**, consolidando-os em um banco de dados SQLite unificado.
+Projeto que utiliza dados dados de voos da **ANAC (Voo Regular Ativo - VRA)** e dados meteorológicos horários do **INMET (Instituto Nacional de Meteorologia)** para tentar antecipar a probabilidade de um voo atraso no mínimo 30 minutos (tempo determinado pela ANAC para considerar um voo atrasado) com 1 hora de antecedência da da partida prevista inicial. 
 
 ## Funcionalidades
 
-- Extração automatizada de portais ANAC e INMET.
-- Download e descompactação em memória (io.BytesIO) — sem arquivos temporários no disco.
-- Padronização de schema (camelCase) e unificação de colunas que mudaram ao longo do tempo.
-- Conversão de codificação latin-1 → utf-8.
-- Limpeza de acentuação e caracteres especiais com `unidecode`.
-- Normalização de decimais (`,` → `.`) para compatibilidade com SQL.
-- Retentativas (retries) em downloads instáveis e verificação de duplicidade para idempotência.
+- Extração automatizada de portais ANAC e INMET utilizando **Python**.
+- Organização da arquitetura Medalhão.
+- Utilização de **SQL** para criação de todas as features stores.
+- Comparação entre modelosd de ML, como **XGBoost, Catboost e Random Forest**.
 
 ## Estrutura do projeto
 
@@ -30,11 +27,6 @@ Automatiza o processo de ETL (Extração, Transformação e Carga) de dados de v
 ## Tecnologias
 
 - Python 3.10+
-- pandas
-- BeautifulSoup4
-- requests
-- sqlite3 (builtin)
-- unidecode
 
 ## Como executar
 
