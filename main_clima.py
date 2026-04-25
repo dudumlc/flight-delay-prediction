@@ -1,3 +1,4 @@
+from datetime import datetime
 import os
 import requests
 import sqlite3
@@ -42,10 +43,16 @@ def processar_zip_inmet(url_zip, ano):
 
                     for col in df.columns:
                         df[col] = tratar_decimal(df, col)
+
+                    df['data'] = pd.to_datetime(df['data'], format='ISO8601')
+                    df['data'] = df['data'].dt.strftime('%Y-%m-%d')
+                    
+                    df['hora'] = df['hora'].str.replace(' UTC','')
+                    df['hora'] = [datetime.strptime(h.replace(':', ''), "%H%M").strftime("%H:%M") for h in df['hora']]
                     
                     with sqlite3.connect(DB_PATH) as conn:
                         
-                        df.to_sql('clima_inmet', conn, if_exists='append', index=False)
+                        df.to_sql('brz_clima', conn, if_exists='append', index=False)
                     
                     print(f"    [SQLITE] {len(df)} linhas inseridas com sucesso.")
             else:
