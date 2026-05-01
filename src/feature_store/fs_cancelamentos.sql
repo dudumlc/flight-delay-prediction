@@ -12,9 +12,9 @@ FROM database.slv_voos
 
 SELECT
     a.idVoo,
-    a.ts_previsto,
-    a.ts_real,
-    a.situacaoVoo,
+    --a.ts_previsto,
+    --a.ts_real,
+    --a.situacaoVoo,
 
     -- 1. Total de cancelamentos na janela
     COUNT(b.idVoo) FILTER (WHERE b.ts_real IS NULL) AS cancelamentos24h,
@@ -66,4 +66,5 @@ LEFT JOIN base_cancelamentos b
     ON  b.ts_previsto >= (a.ts_previsto - INTERVAL 29 HOUR)
     AND b.ts_previsto <= (a.ts_previsto - INTERVAL 5 HOUR)
     -- AND b.ts_real <= (a.ts_previsto - INTERVAL 1 HOUR) -- ASSUMINDO RISCO DE DATA LEAKAGE, POIS O VOO PODE TER SIDO CANCELADO APÓS O HORÁRIO PREVISTO, MAS ANTES DO HORÁRIO REAL, O QUE NÃO SERIA CONHECIDO NO MOMENTO DA PREVISÃO
+WHERE a.ts_real IS NOT NULL
 GROUP BY ALL
