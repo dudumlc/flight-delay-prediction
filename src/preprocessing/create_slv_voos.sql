@@ -1,4 +1,4 @@
-CREATE TABLE slv_voos AS 
+CREATE OR REPLACE TABLE slv_voos AS 
 
 SELECT 
     (empresaAerea || "-" || numeroVoo || "-" || aerodromoOrigem || "-" || aerodromoDestino || "-" || strftime('%Y%m%d%H%M', partidaPrevista) || "-" || strftime('%Y%m%d%H%M', chegadaPrevista)) AS idVoo,
