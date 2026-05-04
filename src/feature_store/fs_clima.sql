@@ -1,3 +1,5 @@
+CREATE OR REPLACE TABLE local_duck.fs_clima AS 
+
 SELECT 
     --CAST(voo.data_hora_clima AS TIMESTAMP) AS ts_data_hora_clima,
     --CAST(clima.data_hora_clima AS TIMESTAMP) AS ts_data_hora_voo,
@@ -127,4 +129,5 @@ FROM database.slv_voos as voo
 LEFT JOIN database.slv_clima as clima
     ON CAST(clima.data_hora_clima AS TIMESTAMP) >= (CAST(voo.data_hora_clima AS TIMESTAMP) - INTERVAL 25 HOUR)
     AND CAST(clima.data_hora_clima AS TIMESTAMP) < (CAST(voo.data_hora_clima AS TIMESTAMP) - INTERVAL 1 HOUR)
+WHERE voo.partidaReal IS NOT NULL
 GROUP BY ALL

@@ -10,7 +10,7 @@ WITH base_flags AS (
         date_diff('minute', CAST(partidaPrevista AS TIMESTAMP), CAST(partidaReal AS TIMESTAMP)) AS deltaPartida_minutos,
 
         -- Definição da variável target - booleano
-        CASE 
+        CASE  
             WHEN date_diff('minute', CAST(partidaPrevista AS TIMESTAMP), CAST(partidaReal AS TIMESTAMP)) > 30 THEN 1 
             ELSE 0 
         END AS flagAtraso
