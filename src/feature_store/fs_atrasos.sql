@@ -18,6 +18,7 @@ WITH base_flags AS (
 
     WHERE
         partidaReal IS NOT NULL
+        AND aerodromoOrigem = 'SBCF'
 )
 
 SELECT

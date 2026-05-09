@@ -4,7 +4,7 @@ SELECT
     --CAST(voo.data_hora_clima AS TIMESTAMP) AS ts_data_hora_clima,
     --CAST(clima.data_hora_clima AS TIMESTAMP) AS ts_data_hora_voo,
     voo.idVoo,
-    voo.partidaPrevista,
+    --voo.partidaPrevista,
     AVG(CAST(clima.precipitacaoTotal AS REAL)) as avgPrecipitacaoTotal24h,
     AVG(CAST(clima.pressaoAtmosferica AS REAL)) as avgPressaoAtmosferica24h,
     AVG(CAST(clima.pressaoAtmosfericaMaxUltimaHora AS REAL)) as avgPressaoAtmosfericaMaxUltimaHora24h,
@@ -129,5 +129,7 @@ FROM database.slv_voos as voo
 LEFT JOIN database.slv_clima as clima
     ON CAST(clima.data_hora_clima AS TIMESTAMP) >= (CAST(voo.data_hora_clima AS TIMESTAMP) - INTERVAL 25 HOUR)
     AND CAST(clima.data_hora_clima AS TIMESTAMP) < (CAST(voo.data_hora_clima AS TIMESTAMP) - INTERVAL 1 HOUR)
-WHERE voo.partidaReal IS NOT NULL
+WHERE 
+    voo.partidaReal IS NOT NULL
+    AND voo.aerodromoOrigem = 'SBCF'
 GROUP BY ALL
