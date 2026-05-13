@@ -1,6 +1,8 @@
-os
 requests
 bs4
-sqlite3
 pandas
 duckdb
+scikit-learn
+xgboost
+seaborn
+matplotlib

@@ -1,0 +1,33 @@
+voo nacional ou internacional
+duracao esperada do voo
+boleano se é o primeiro voo daquela companhia no dia
+boleano se é o primeiro voo daquela companhia naquela rota no dia
+quantos voos estao previsto para a mesma janela de +-1 hora hora em confins
+quantos voos estao previsto para a mesma janela de +-30 min hora em confins
+quantos voos estao previsto para a mesma janela de +-15 min hora em confins
+
+
+dia do mes
+dia da semana
+mes
+horario do dia
+determinar se é final de semana ou n
+deteerminar se é feriado ou nao
+
+
+taxa de atraso daquela companhia
+media de atraso em minutos daquela companhia
+taxa de atraso daquele destino
+media de atraso em minutos daquele destino
+quantos % dos atrasos das 24hrs foram nas ultimas 3 h (3h/24h)
+quantos % dos atrasos das 24hrs foram nas ultimas 12 h (12h/24h)
+percentual de atraso sobre o total (normalizacao do tamanho da companhia)
+qtd voos atrasados indo para sbcf
+
+
+delta de features de clima avg3h - avg12h para pegar diminuições ou aumentos bruscos nas horas que antecedem a prvisao
+delta de features de clima max3h - avg12h/24h para pegar se as rajadas/pontos max estao acima da media
+delta de temperatura e ponto do orvalho para analisar problemas de visibilidade
+
+
+retirar variaveis de atrasos e cancelamentos na rota (n faz sentido se estou analisando apenas confins, vai ser o msm de destino)
