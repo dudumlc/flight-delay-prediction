@@ -1,4 +1,4 @@
---CREATE OR REPLACE TABLE local_duck.fs_operacional AS  --Criação de tabela de features no duckdb para facilitar manipulação
+CREATE OR REPLACE TABLE local_duck.fs_operacional AS  --Criação de tabela de features no duckdb para facilitar manipulação
 
 WITH base_flags AS (
 
@@ -28,10 +28,7 @@ WITH base_flags AS (
 
 SELECT
     a.idVoo,
-    a.codeTipoLinha,
-    a.empresaAerea,
-    a.ts_partidaPrevista,
-    DATE_TRUNC('day', a.ts_partidaPrevista) AS diaPartida,
+
     CASE WHEN a.codeTipoLinha in ('N', 'C') THEN 1 ELSE 0 END AS vooDomestico,
     CASE WHEN a.codeTipoLinha in ('I', 'G') THEN 1 ELSE 0 END AS vooInternacional,
     CASE WHEN a.codeTipoLinha in ('C', 'G') THEN 1 ELSE 0 END AS vooCargueiro,
@@ -56,6 +53,5 @@ FROM base_flags a
 LEFT JOIN base_flags b 
     ON  b.ts_partidaPrevista >= (a.ts_partidaPrevista - INTERVAL 24 HOUR)
     AND b.ts_partidaPrevista <= (a.ts_partidaPrevista + INTERVAL 24 HOUR)
-    -- AND b.ts_chegadaReal <= (a.ts_chegadaPrevista - INTERVAL 1 HOUR) -- Anti-leakage
 
 GROUP BY ALL
