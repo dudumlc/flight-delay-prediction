@@ -19,8 +19,8 @@ taxa de atraso daquela companhia
 media de atraso em minutos daquela companhia
 taxa de atraso daquele destino
 media de atraso em minutos daquele destino
-quantos % dos atrasos das 24hrs foram nas ultimas 3 h (3h/24h)
-quantos % dos atrasos das 24hrs foram nas ultimas 12 h (12h/24h)
+quantos % dos atrasos das 24hrs foram nas ultimas 3 h (3h/24h) V
+quantos % dos atrasos das 24hrs foram nas ultimas 12 h (12h/24h) V
 percentual de atraso sobre o total (normalizacao do tamanho da companhia)
 qtd voos atrasados indo para sbcf
 

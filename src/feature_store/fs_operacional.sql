@@ -28,6 +28,9 @@ WITH base_flags AS (
 
 SELECT
     a.idVoo,
+    a.aerodromoDestino,
+    a.empresaAerea,
+    a.numeroVoo,
 
     CASE WHEN a.codeTipoLinha in ('N', 'C') THEN 1 ELSE 0 END AS vooDomestico,
     CASE WHEN a.codeTipoLinha in ('I', 'G') THEN 1 ELSE 0 END AS vooInternacional,

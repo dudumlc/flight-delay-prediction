@@ -33,6 +33,14 @@ SELECT
     WEEK(ts_partidaPrevista) AS partidaSemanaAno,
 
     HOUR(ts_partidaPrevista) AS partidaHora,
+
+    CASE 
+        WHEN HOUR(ts_partidaPrevista) >= 0 AND HOUR(ts_partidaPrevista) < 6 THEN 'Madrugada'
+        WHEN HOUR(ts_partidaPrevista) >= 6 AND HOUR(ts_partidaPrevista) < 12 THEN 'Manha'
+        WHEN HOUR(ts_partidaPrevista) >= 12 AND HOUR(ts_partidaPrevista) < 18 THEN 'Tarde'
+        ELSE 'Noite'
+    END AS partidaPeriodoDia,
+
     HOUR(ts_partidaPrevista) + ( MINUTE(ts_partidaPrevista)/60.0 ) AS partidaHoraMinutoDecimal,
 
     CASE 

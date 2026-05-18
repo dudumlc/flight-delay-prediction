@@ -26,3 +26,5 @@ FROM base_flags flag
 LEFT JOIN local_duck.fs_clima clima USING (idVoo)
 LEFT JOIN local_duck.fs_atrasos atrasos USING (idVoo)
 LEFT JOIN local_duck.fs_cancelamentos cancelamentos USING (idVoo)
+LEFT JOIN local_duck.fs_operacional operacional USING (idVoo)
+LEFT JOIN local_duck.fs_temporal temporal USING (idVoo)
